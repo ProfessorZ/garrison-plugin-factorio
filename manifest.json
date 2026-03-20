@@ -1,7 +1,7 @@
 {
   "id": "factorio",
   "name": "garrison-plugin-factorio",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "display_name": "Factorio",
   "description": "RCON plugin for Factorio dedicated servers",
   "author": "Garrison",
@@ -9,7 +9,7 @@
   "garrison_api": "1",
   "default_ports": {
     "game": 34197,
-    "rcon": 27015
+    "rcon": 7777
   },
   "icon": "\u2699\ufe0f"
 }
