@@ -1,4 +1,4 @@
-"""Factorio RCON command schema v1.0.0 — covers Factorio 1.1+ and 2.0+."""
+"""Factorio RCON command schema v2.0.0 — full real command list (32 commands)."""
 
 
 def get_commands():
@@ -6,9 +6,7 @@ def get_commands():
     from app.plugins.base import CommandDef, CommandParam
 
     return [
-        # ── PLAYER MANAGEMENT ─────────────────────────────────────────
-        CommandDef(name="/players", description="List connected players", category="PLAYER_MGMT", example="/players"),
-        CommandDef(name="/players online", description="List online players with details", category="PLAYER_MGMT", example="/players online"),
+        # ── PLAYER_MGMT ─────────────────────────────────────────────
         CommandDef(
             name="/whisper",
             description="Send a private message to a player",
@@ -20,18 +18,24 @@ def get_commands():
             example="/whisper <player> <message>",
         ),
         CommandDef(
-            name="/ignore",
-            description="Ignore a player's chat messages",
+            name="/shout",
+            description="Send a message to all players",
             category="PLAYER_MGMT",
-            params=[CommandParam(name="player", type="string", description="Player to ignore")],
-            example="/ignore <player>",
+            params=[CommandParam(name="message", type="string", description="Message to shout")],
+            example="/shout <message>",
         ),
-
-        # ── MODERATION ────────────────────────────────────────────────
+        CommandDef(
+            name="/reply",
+            description="Reply to the last whisper received",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="message", type="string", description="Reply message")],
+            example="/reply <message>",
+        ),
+        CommandDef(name="/players", description="List connected players", category="PLAYER_MGMT", example="/players"),
         CommandDef(
             name="/kick",
             description="Kick a player from the server",
-            category="MODERATION",
+            category="PLAYER_MGMT",
             params=[
                 CommandParam(name="player", type="string", description="Player to kick"),
                 CommandParam(name="reason", type="string", required=False, description="Kick reason"),
@@ -41,157 +45,204 @@ def get_commands():
         CommandDef(
             name="/ban",
             description="Ban a player from the server",
-            category="MODERATION",
+            category="PLAYER_MGMT",
             params=[
                 CommandParam(name="player", type="string", description="Player to ban"),
                 CommandParam(name="reason", type="string", required=False, description="Ban reason"),
             ],
             example="/ban <player> <reason>",
         ),
+        CommandDef(name="/bans", description="List all banned players", category="PLAYER_MGMT", example="/bans"),
         CommandDef(
             name="/unban",
             description="Unban a player",
-            category="MODERATION",
+            category="PLAYER_MGMT",
             params=[CommandParam(name="player", type="string", description="Player to unban")],
             example="/unban <player>",
         ),
-        CommandDef(name="/bans", description="List all banned players", category="MODERATION", example="/bans"),
-        CommandDef(
-            name="/mute",
-            description="Mute a player",
-            category="MODERATION",
-            params=[CommandParam(name="player", type="string", description="Player to mute")],
-            example="/mute <player>",
-        ),
-        CommandDef(
-            name="/unmute",
-            description="Unmute a player",
-            category="MODERATION",
-            params=[CommandParam(name="player", type="string", description="Player to unmute")],
-            example="/unmute <player>",
-        ),
-
-        # ── ADMIN ─────────────────────────────────────────────────────
+        CommandDef(name="/admins", description="List server admins", category="PLAYER_MGMT", example="/admins"),
         CommandDef(
             name="/promote",
             description="Promote a player to admin",
-            category="ADMIN",
+            category="PLAYER_MGMT",
             params=[CommandParam(name="player", type="string", description="Player to promote")],
             example="/promote <player>",
         ),
         CommandDef(
             name="/demote",
             description="Demote a player from admin",
-            category="ADMIN",
+            category="PLAYER_MGMT",
             params=[CommandParam(name="player", type="string", description="Player to demote")],
             example="/demote <player>",
         ),
-        CommandDef(name="/admins", description="List server admins", category="ADMIN", example="/admins"),
-        CommandDef(name="/permissions", description="Manage permission groups", category="ADMIN", example="/permissions"),
         CommandDef(
-            name="/permissions add-player",
-            description="Add a player to a permission group",
-            category="ADMIN",
+            name="/color",
+            description="Change a player's color",
+            category="PLAYER_MGMT",
             params=[
-                CommandParam(name="group", type="string", description="Permission group name"),
-                CommandParam(name="player", type="string", description="Player to add"),
+                CommandParam(name="player", type="string", description="Player name"),
+                CommandParam(name="color", type="string", description="Color value (e.g. red, #ff0000, or r g b a)"),
             ],
-            example="/permissions add-player <group> <player>",
+            example="/color <player> <color>",
         ),
         CommandDef(
-            name="/permissions create-group",
-            description="Create a new permission group",
-            category="ADMIN",
-            params=[CommandParam(name="name", type="string", description="Group name")],
-            example="/permissions create-group <name>",
+            name="/mute",
+            description="Mute a player",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="player", type="string", description="Player to mute")],
+            example="/mute <player>",
         ),
         CommandDef(
-            name="/permissions get-player-group",
-            description="Get a player's permission group",
-            category="ADMIN",
-            params=[CommandParam(name="player", type="string", description="Player name")],
-            example="/permissions get-player-group <player>",
+            name="/unmute",
+            description="Unmute a player",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="player", type="string", description="Player to unmute")],
+            example="/unmute <player>",
+        ),
+        CommandDef(name="/mutes", description="List all muted players", category="PLAYER_MGMT", example="/mutes"),
+        CommandDef(
+            name="/ignore",
+            description="Ignore a player's chat messages",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="player", type="string", description="Player to ignore")],
+            example="/ignore <player>",
+        ),
+        CommandDef(
+            name="/unignore",
+            description="Stop ignoring a player",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="player", type="string", description="Player to unignore")],
+            example="/unignore <player>",
+        ),
+        CommandDef(name="/ignores", description="List all ignored players", category="PLAYER_MGMT", example="/ignores"),
+        CommandDef(
+            name="/whitelist",
+            description="Manage the server whitelist (add/remove/get/clear)",
+            category="PLAYER_MGMT",
+            params=[CommandParam(name="player", type="string", description="Player to add or remove")],
+            example="/whitelist add <player>",
+        ),
+        CommandDef(name="/banlist", description="Show the ban list", category="PLAYER_MGMT", example="/banlist"),
+        CommandDef(
+            name="/permissions",
+            description="Manage permission groups",
+            category="PLAYER_MGMT",
+            params=[
+                CommandParam(name="group", type="string", required=False, description="Permission group name"),
+            ],
+            example="/permissions <group>",
+        ),
+        CommandDef(
+            name="/swap-players",
+            description="Swap two players' characters",
+            category="PLAYER_MGMT",
+            params=[
+                CommandParam(name="player1", type="string", description="First player"),
+                CommandParam(name="player2", type="string", description="Second player"),
+            ],
+            example="/swap-players <player1> <player2>",
         ),
 
-        # ── SERVER ────────────────────────────────────────────────────
+        # ── SCRIPTING ────────────────────────────────────────────────
+        CommandDef(
+            name="/command",
+            description="Execute a Lua command",
+            category="SCRIPTING",
+            params=[CommandParam(name="lua_code", type="string", description="Lua code to execute")],
+            example="/command game.print('hello')",
+        ),
+        CommandDef(
+            name="/measured-command",
+            description="Execute a Lua command and report execution time",
+            category="SCRIPTING",
+            params=[CommandParam(name="lua_code", type="string", description="Lua code to execute")],
+            example="/measured-command game.print('hello')",
+        ),
+        CommandDef(
+            name="/silent-command",
+            description="Execute a Lua command without printing output",
+            category="SCRIPTING",
+            params=[CommandParam(name="lua_code", type="string", description="Lua code to execute")],
+            example="/silent-command game.speed = 2",
+        ),
+
+        # ── SERVER ───────────────────────────────────────────────────
         CommandDef(name="/version", description="Print the game version", category="SERVER", example="/version"),
         CommandDef(name="/time", description="Print the map age", category="SERVER", example="/time"),
-        CommandDef(name="/seed", description="Print the map seed", category="SERVER", example="/seed"),
-        CommandDef(name="/evolution", description="Print the evolution factor", category="SERVER", example="/evolution"),
         CommandDef(
-            name="/save",
-            description="Save the game",
+            name="/server-save",
+            description="Force a server autosave",
             category="SERVER",
             params=[CommandParam(name="name", type="string", required=False, description="Save file name")],
-            example="/save <name>",
+            example="/server-save <name>",
         ),
-        CommandDef(name="/help", description="List all available commands", category="SERVER", example="/help"),
+        CommandDef(name="/seed", description="Print the map seed", category="SERVER", example="/seed"),
         CommandDef(
-            name="/config get",
-            description="Get a server configuration value",
+            name="/config",
+            description="Get or set server configuration values",
+            category="SERVER",
+            params=[CommandParam(name="option", type="string", required=False, description="Config option to get/set")],
+            example="/config get afk-auto-kick",
+        ),
+        CommandDef(name="/evolution", description="Print the evolution factor", category="SERVER", example="/evolution"),
+        CommandDef(
+            name="/screenshot",
+            description="Take a screenshot of the game",
             category="SERVER",
             params=[
-                CommandParam(
-                    name="option",
-                    type="choice",
-                    description="Configuration option name",
-                    choices=[
-                        "afk-auto-kick", "allow-commands", "autosave-interval",
-                        "max-players", "max-upload-slots", "max-upload-in-kilobytes-per-second",
-                        "name", "description", "tags", "password",
-                        "visibility-lan", "visibility-public",
-                        "require-user-verification", "only-admins-can-pause-the-game",
-                    ],
-                ),
+                CommandParam(name="resolution", type="string", required=False, description="Screenshot resolution (e.g. 1920x1080)"),
             ],
-            example="/config get <option>",
+            example="/screenshot <resolution>",
         ),
         CommandDef(
-            name="/config set",
-            description="Set a server configuration value",
+            name="/open",
+            description="Open a player's inventory or map",
             category="SERVER",
-            params=[
-                CommandParam(
-                    name="option",
-                    type="choice",
-                    description="Configuration option name",
-                    choices=[
-                        "afk-auto-kick", "allow-commands", "autosave-interval",
-                        "max-players", "max-upload-slots", "max-upload-in-kilobytes-per-second",
-                        "name", "description", "tags", "password",
-                        "visibility-lan", "visibility-public",
-                        "require-user-verification", "only-admins-can-pause-the-game",
-                    ],
-                ),
-                CommandParam(name="value", type="string", description="New value"),
-            ],
-            example="/config set <option> <value>",
+            params=[CommandParam(name="target", type="string", required=False, description="What to open")],
+            example="/open <target>",
         ),
+        CommandDef(name="/alerts", description="Show active alerts", category="SERVER", example="/alerts"),
+        CommandDef(
+            name="/purge",
+            description="Purge a player's chat messages",
+            category="SERVER",
+            params=[CommandParam(name="player", type="string", description="Player whose messages to purge")],
+            example="/purge <player>",
+        ),
+        CommandDef(name="/clear", description="Clear the console log", category="SERVER", example="/clear"),
+        CommandDef(
+            name="/space-platform-delete-time",
+            description="Set or get the time before idle space platforms are deleted",
+            category="SERVER",
+            params=[CommandParam(name="minutes", type="integer", required=False, description="Minutes before deletion")],
+            example="/space-platform-delete-time <minutes>",
+        ),
+        CommandDef(name="/delete-blueprint-library", description="Delete your blueprint library", category="SERVER", example="/delete-blueprint-library"),
+        CommandDef(name="/toggle-action-logging", description="Toggle logging of player actions", category="SERVER", example="/toggle-action-logging"),
 
-        # ── WORLD ─────────────────────────────────────────────────────
-        CommandDef(
-            name="/clear",
-            description="Clear pollution or highlights",
-            category="WORLD",
-            params=[CommandParam(name="what", type="choice", description="What to clear", choices=["pollution", "highlights"])],
-            example="/clear <what>",
-        ),
+        # ── PERFORMANCE ──────────────────────────────────────────────
+        CommandDef(name="/toggle-heavy-mode", description="Toggle heavy mode (extra entity validation)", category="PERFORMANCE", example="/toggle-heavy-mode"),
         CommandDef(
             name="/perf-avg-frames",
             description="Set the number of frames for performance averaging",
-            category="WORLD",
-            params=[CommandParam(name="count", type="integer", description="Number of frames")],
+            category="PERFORMANCE",
+            params=[CommandParam(name="count", type="integer", description="Number of frames to average")],
             example="/perf-avg-frames <count>",
         ),
 
-        # ── DEBUG ─────────────────────────────────────────────────────
-        CommandDef(name="/toggle-action-logging", description="Toggle logging of player actions", category="DEBUG", example="/toggle-action-logging"),
-        CommandDef(name="/toggle-heavy-mode", description="Toggle heavy mode", category="DEBUG", example="/toggle-heavy-mode"),
+        # ── DEBUG ────────────────────────────────────────────────────
+        CommandDef(name="/editor", description="Toggle the map editor", category="DEBUG", example="/editor"),
+        CommandDef(name="/admin", description="Toggle admin status on yourself", category="DEBUG", example="/admin"),
         CommandDef(
-            name="/measured-command",
-            description="Run a command and measure execution time",
+            name="/cheat",
+            description="Toggle cheat mode or run a cheat subcommand",
             category="DEBUG",
-            params=[CommandParam(name="command", type="string", description="Command to run")],
-            example="/measured-command <command>",
+            params=[CommandParam(name="subcommand", type="string", required=False, description="Cheat subcommand (e.g. all)")],
+            example="/cheat all",
         ),
+        CommandDef(name="/unlock-shortcut-bar", description="Unlock all shortcut bar items", category="DEBUG", example="/unlock-shortcut-bar"),
+        CommandDef(name="/unlock-tips", description="Unlock all tips and tricks", category="DEBUG", example="/unlock-tips"),
+        CommandDef(name="/reset-tips", description="Reset tips and tricks to unread state", category="DEBUG", example="/reset-tips"),
+        CommandDef(name="/large-blueprint-size", description="Toggle allowing larger blueprints", category="DEBUG", example="/large-blueprint-size"),
+        CommandDef(name="/mute-programmable-speaker", description="Mute all programmable speakers", category="DEBUG", example="/mute-programmable-speaker"),
     ]
