@@ -101,3 +101,13 @@ class FactorioPlugin(GamePlugin):
     async def message_player(self, send_command, name: str, message: str) -> str:
         lua = f'game.get_player("{name}").print("{message}")'
         return await send_command(f"/silent-command {lua}")
+
+    async def get_player_roles(self) -> list[str]:
+        return ["admin"]
+
+    async def promote_player(self, send_command, player: str, role: str) -> str:
+        return await send_command(f"/promote {player}")
+
+    async def demote_player(self, send_command, player: str) -> str:
+        return await send_command(f"/demote {player}")
+
